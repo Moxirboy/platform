@@ -13,10 +13,10 @@ jobs:
             - name: Build Docker Image
               run: docker build . --tag my-image-name:$(date +%s)
 
-            - name: Publish to Registry
-              uses: moxirboy/github@master
-              with:
-                   name: Moxirboy/platform
-                   username: ${{ secrets.DOCKER_USERNAME }}
-                   password: ${{ secrets.DOCKER_PASSWORD }}
+            # - name: Publish to Registry
+            #   uses: moxirboy/github@master
+            #   with:
+            #        name: Moxirboy/platform
+            #        username: ${{ secrets.DOCKER_USERNAME }}
+            #        password: ${{ secrets.DOCKER_PASSWORD }}
                    
