@@ -9,7 +9,7 @@ jobs:
     build-and-publish:
         runs-on: ubuntu-latest
         steps:
-            - uses: action/checkout@v2
+            - uses: actions/checkout@v2
             - name: Build Docker Image
               run: docker build . --tag my-image-name:$(date +%s)
 
