@@ -16,7 +16,7 @@ jobs:
             - name: Publish to Registry
               uses: elgohr/Publish-Docker-Github-Action@v4
               with:
-                   name: my-image-name
+                   name: Moxirboy/platform
                    username: ${{ secrets.DOCKER_USERNAME }}
                    password: ${{ secrets.DOCKER_PASSWORD }}
                    
