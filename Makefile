@@ -77,47 +77,6 @@ git:
 git-pull:
 	git pull origin master
 	
--include .env
-export
-
-DOCKER_COMPOSE_FILE=docker-compose.yaml
-
-arg = $(filter-out $@,$(MAKECMDGOALS))
-
-# proto
-.PHONY: proto-gen
-proto-gen:
-	./scripts/gen-proto.sh
-
-# git submodule init 	
-.PHONY: pull-proto
-pull-proto:
-	git submodule update --init --recursive
-
-# go generate	
-.PHONY: go-gen
-go-gen:
-	go generate ./...
-
-.PHONY: start
-start:
-	@echo "Start Containers"
-	docker compose -f ${DOCKER_COMPOSE_FILE} up -d ${DOCKER_SERVICES}
-	sleep 2
-	docker compose -f ${DOCKER_COMPOSE_FILE} ps
-
-.PHONY: stop
-stop:
-	@echo "Stop Containers"
-	docker compose -f ${DOCKER_COMPOSE_FILE} stop ${DOCKER_SERVICES}
-	sleep 2
-	docker compose -f ${DOCKER_COMPOSE_FILE} ps
-
-.PHONY: stop
-rm: stop
-	@echo "Remove Containers"
-	docker compose -f ${DOCKER_COMPOSE_FILE} rm -v -f ${DOCKER_SERVICES}
-
 .PHONY: migration-up
 migration-up:
 	@echo "Migrations Up"

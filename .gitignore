@@ -6,9 +6,7 @@
 .admin_go_cache/
 .teacher_go_cache/
 .cover
-coverage.out
-.gateway_go_cache/
+admins/
 students/
 teachers/
-admins/
-gateway/
+.gateway_go_cache/
