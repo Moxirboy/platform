@@ -1,0 +1,8 @@
+.go/
+.go-cache/
+.env
+.idea/
+.student_go_cache/
+.admin_go_cache/
+.teacher_go_cache/
+.cover
