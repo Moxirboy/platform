@@ -1,19 +1,19 @@
 package postgres
 
 import (
+	"admin/internal/service/repo"
+	logger "admin/pkg/log"
 	"database/sql"
-	"log"
-	"platform/admins/internal/service/repo"
 )
 
 type userRepository struct {
 	db *sql.DB
-	log log.Logger
+	log logger.Logger
 }
 
 func NewUserRepository(
 	db *sql.DB,
-	log log.Logger,
+	log logger.Logger,
 ) repo.IUserRepository {
 	return &userRepository{
 		db: db,
