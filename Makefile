@@ -77,6 +77,8 @@ git:
 git-pull:
 	git pull origin master
 	
+
+	
 .PHONY: migration-up
 migration-up:
 	@echo "Migrations Up"
