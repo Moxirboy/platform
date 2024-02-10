@@ -8,3 +8,7 @@
 .cover
 coverage.out
 .gateway_go_cache/
+students/
+teachers/
+admins/
+gateway/

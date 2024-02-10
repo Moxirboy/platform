@@ -24,7 +24,7 @@ services:
       context: ./docker/go/backend
       dockerfile: Dockerfile
     volumes:
-      - ./admins:/admins  # Adjusted path to main.go
+      - ./backend/admin:/admins  # Adjusted path to main.go
       - ./.go/pkg:/go/pkg
       - ./.admin_go_cache:/go-cache
     working_dir: /admins
@@ -41,7 +41,7 @@ services:
       context: ./docker/go/backend
       dockerfile: Dockerfile
     volumes:
-      - ./students:/students
+      - ./backend/student:/students
       - ./.go/pkg:/go/pkg # Consider separate volume for each service
       - ./.student_go_cache:/go-cache # Use individual cache per service
     working_dir: /students
@@ -58,7 +58,7 @@ services:
       context: ./docker/go/backend
       dockerfile: Dockerfile
     volumes:
-      - ./teachers:/teachers
+      - ./backend/teacher:/teachers
       - ./.go/pkg:/go/pkg # Consider separate volume for each service
       - ./.teacher_go_cache:/go-cache # Use individual cache per service
     working_dir: /teachers
@@ -76,7 +76,7 @@ services:
       context: ./docker/go/app
       dockerfile: Dockerfile
     volumes:
-      - ./gateway:/gateway
+      - ./backend/gate:/gateway
       - ./.go/pkg:/go/pkg # Consider separate volume for each service
       - ./.gateway_go_cache:/go-cache # Use individual cache per service
     working_dir: /gateway
