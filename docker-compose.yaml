@@ -1,6 +1,24 @@
 version: '3.8'
 
 services:
+  migrate:
+    image: migrate/migrate
+    volumes:
+      - .:/app
+    working_dir: /app
+    env_file:
+      - .env
+    profiles:
+      - donotstart
+    depends_on:
+      - db
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: platform
+    ports:
+      - "5432"
   admin:
     build:
       context: ./docker/go/backend
@@ -16,6 +34,8 @@ services:
       - .env
     environment:
       GOCACHE: /go-cache
+    depends_on:
+      - db
   student:
     build:
       context: ./docker/go/backend
@@ -31,7 +51,8 @@ services:
       - .env
     environment:
       GOCACHE: /go-cache
-
+    depends_on:
+      - db
   teacher:
     build:
       context: ./docker/go/backend
@@ -47,19 +68,26 @@ services:
       - .env
     environment:
       GOCACHE: /go-cache
-  migrate:
-    image: migrate/migrate
+    depends_on:
+      - db
+  
+  app:
+    build:
+      context: ./docker/go/app
+      dockerfile: Dockerfile
     volumes:
-      - .:/app
-    working_dir: /app
+      - ./gateway:/gateway
+      - ./.go/pkg:/go/pkg # Consider separate volume for each service
+      - ./.gateway_go_cache:/go-cache # Use individual cache per service
+    working_dir: /gateway
+    ports:
+      - "8080:8080"
     env_file:
       - .env
-    profiles:
-      - donotstart
-  db:
-    image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: platform
-    ports:
-      - "5432"
+      GOCACHE: /go-cache
+    depends_on:
+      - admin
+      - student
+      - teacher
+      - db
