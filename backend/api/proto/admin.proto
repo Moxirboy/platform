@@ -1,0 +1,25 @@
+syntax="proto3";
+
+package admin;
+
+option go_package = "./backend/admin/proto";
+
+
+service CreateTeacher {
+    rpc CreateUser (User) returns (ErrorResponse){}
+}
+
+message User  {
+	string ID =1;
+	string Username =2;
+    string Password =3;
+    string Role =4;
+    string CreatedAt =5;
+    string UpdateAt =6;
+	string DeletedAt =7;
+	bool Verified =8;
+}
+
+message ErrorResponse {
+    string Error_message=1;
+}
