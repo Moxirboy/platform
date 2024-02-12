@@ -5,7 +5,7 @@ import (
 	pb "admin/proto"
 )
 
-func fromReqToModel(
+func FromReqToModel(
 	req *pb.User,
 ) models.User{
 	return models.User{

@@ -29,7 +29,7 @@ services:
       - ./.admin_go_cache:/go-cache
     working_dir: /admins
     ports:
-      - "8081:8081"
+      - "5006:5006"
     env_file:
       - .env
     environment:
@@ -73,15 +73,15 @@ services:
   
   app:
     build:
-      context: ./docker/go/app
+      context: ./docker/go/backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend/gate:/gateway
+      - ./backend/gateway:/gateway
       - ./.go/pkg:/go/pkg # Consider separate volume for each service
       - ./.gateway_go_cache:/go-cache # Use individual cache per service
     working_dir: /gateway
     ports:
-      - "8080:8080"
+      - "5005:5005"
     env_file:
       - .env
     environment:

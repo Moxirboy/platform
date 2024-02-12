@@ -108,3 +108,13 @@ mod-tidy:
 	@echo "Go mod tidy"
 	sleep 2
 	docker compose exec app go mod tidy
+
+
+.PHONY: protoc
+protoc:
+    export PATH=$PATH:$(go env GOPATH)/bin
+	@echo " protoc file $(name) path=./backend/api/proto/$(name).proto"
+	sleep 2
+	protoc --go_out=.  --go-grpc_out=. ./backend/api/proto/$(name).proto
+    
+

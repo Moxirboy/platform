@@ -7,6 +7,7 @@ import (
 )
 
 func main(){
+	
 	var (
 		config=configs.Load()
 	)
