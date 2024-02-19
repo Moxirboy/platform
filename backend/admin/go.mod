@@ -1,10 +1,12 @@
 module admin
 
 go 1.21.7
+
 require (
 	github.com/caarlos0/env/v6 v6.10.1
 	github.com/jackc/pgx/v4 v4.18.1
 	github.com/joho/godotenv v1.5.1
+	github.com/mattn/go-sqlite3 v1.14.22
 	github.com/pkg/errors v0.9.1
 	go.uber.org/zap v1.26.0
 	google.golang.org/grpc v1.61.0

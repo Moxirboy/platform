@@ -17,3 +17,11 @@ type User struct {
 	Verified bool
 }
 
+type UserList struct{
+	TotalCount int
+	TotalPages int
+	Page int
+	Size int
+	HasMore bool
+	Users []*User
+}

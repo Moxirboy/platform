@@ -87,6 +87,6 @@ type (
 	}
 
 	RPC struct{
-		Port string `env:"RPC_PORT"`
+		Port string `env:"ADMIN_RPC_PORT"`
 	}
 )

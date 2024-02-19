@@ -15,13 +15,15 @@ services:
   db:
     image: postgres:latest
     environment:
-      POSTGRES_PASSWORD: postgres
       POSTGRES_DB: platform
+      POSTGRES_PASSWORD: postgres
     ports:
-      - "5432"
+      - "5432:5005"
+    networks:
+      - platform
   admin:
     build:
-      context: ./docker/go/backend
+      context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/admin:/admins  # Adjusted path to main.go
@@ -29,16 +31,37 @@ services:
       - ./.admin_go_cache:/go-cache
     working_dir: /admins
     ports:
-      - "8081:8081"
+      - "5006:5005"
     env_file:
       - .env
     environment:
       GOCACHE: /go-cache
     depends_on:
       - db
+    networks:
+      - platform
+  auth:
+    build:
+      context: ./docker/backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/auth:/auths  # Adjusted path to main.go
+      - ./.go/pkg:/go/pkg
+      - ./.auth_go_cache:/go-cache
+    working_dir: /auths
+    ports:
+      - "5007:5005"
+    env_file:
+      - .env
+    environment:
+      GOCACHE: /go-cache
+    depends_on:
+      - db
+    networks:
+      - platform
   student:
     build:
-      context: ./docker/go/backend
+      context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/student:/students
@@ -55,7 +78,7 @@ services:
       - db
   teacher:
     build:
-      context: ./docker/go/backend
+      context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/teacher:/teachers
@@ -73,15 +96,15 @@ services:
   
   app:
     build:
-      context: ./docker/go/app
+      context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend/gate:/gateway
+      - ./backend/apigateway:/apigateway
       - ./.go/pkg:/go/pkg # Consider separate volume for each service
       - ./.gateway_go_cache:/go-cache # Use individual cache per service
-    working_dir: /gateway
+    working_dir: /apigateway
     ports:
-      - "8080:8080"
+      - "5005:5005"
     env_file:
       - .env
     environment:
@@ -91,3 +114,9 @@ services:
       - student
       - teacher
       - db
+    networks:
+      - platform
+
+networks:
+  platform:
+    driver: bridge

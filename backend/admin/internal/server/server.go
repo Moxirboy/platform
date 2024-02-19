@@ -3,11 +3,14 @@ package server
 import (
 	"admin/internal/configs"
 	"admin/internal/controller/grpc/v3/handler"
+	"log"
+	// "context"
 	"admin/internal/service/usecase"
 	logger "admin/pkg/log"
 	"admin/pkg/postgres"
-	"net"
 	pb "admin/proto"
+	"net"
+
 	"google.golang.org/grpc"
 )
 
@@ -27,7 +30,8 @@ func NewServer(
 	}
 }
 func (s Server) Run() error {
-	lis,err:=net.Listen("tcp",s.cfg.RPC.Port)
+	lis,err:=net.Listen("tcp",":5006")
+	log.Println(lis)
 	if err != nil {
 		s.log.Fatalf("failed to listen: %v", err)
 	}
@@ -40,8 +44,20 @@ func (s Server) Run() error {
 		)
 	} 
 	uc:=usecase.New(pg,s.log)
-	serve:=handler.NewTeacherHandler(uc.TeacherUsecase(),s.log)
+
+
 	server:=grpc.NewServer()
-	pb.RegisterCreateTeacherServer(server,serve.CreateTeacherServer)
-	return server.Serve(lis)
+	
+	pb.RegisterUserServiceServer(server,handler.NewTeacherHandler(uc.TeacherUsecase(),s.log))
+	
+	names:=server.GetServiceInfo()
+	log.Println(names)
+	// pb.RegisterCreateTeacherServer(server,&Serve{})
+	err=server.Serve(lis)
+	if err!=nil{
+		log.Println(err)
+  		return err
+	}
+
+	return nil
 }
