@@ -59,8 +59,9 @@ race: set-env ## Run data race detector
 msan: set-env ## Run memory sanitizer. If this test fails, you need to write the following command: export CC=clang (if you have installed clang)
 	env CC=clang env CXX=clang++ go test -mod=readonly -msan -short ${PKG_LIST}
 
-gen-proto:
-	./scripts/gen-proto.sh ${CURRENT_DIR}
+.PHONY: proto-gen
+proto-gen:
+	./scripts/gen-proto.sh  ${CURRENT_DIR}
 
 
 ci-lint:
@@ -110,11 +111,7 @@ mod-tidy:
 	docker compose exec app go mod tidy
 
 
-.PHONY: protoc
-protoc:
-    export PATH=$PATH:$(go env GOPATH)/bin
-	@echo " protoc file $(name) path=./backend/api/proto/$(name).proto"
-	sleep 2
-	protoc --go_out=.  --go-grpc_out=. ./backend/api/proto/$(name).proto
-    
+# moxirboy@moxirboy:~/Desktop/go/src/platform$    protoc --go_out=.  --go-grpc_out=. ./backend/api/proto/admin.proto
+
+
 

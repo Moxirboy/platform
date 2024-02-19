@@ -10,7 +10,7 @@ import (
 
 
 type teacher struct {
-	pb.UnimplementedCreateTeacherServer
+	pb.UnimplementedUserServiceServer
 	uc usecase.ITeacherUsecase
 	logger logger.Logger
 }
@@ -29,13 +29,27 @@ func NewTeacherHandler(
 
 func (h *teacher) CreateUser(ctx context.Context, req *pb.User) (*pb.ErrorResponse,error){
 	user:=FromReqToModel(req)
-	log.Println(user)
+	
 	err:=h.uc.Create(ctx,&user)
 	if err!=nil{
 		h.logger.Errorf(err.Error())
 		return FromModelToResponse(err),err
 	}
+	log.Println(user)
 	return &pb.ErrorResponse{
-		ErrorMessage: "so bolasla",
+		ErrorMessage: user.ID,
 	},nil
+	
+}
+func (h *teacher) GetUserList(ctx context.Context, in *pb.PaginationQuery, ) (*pb.UserList, error) {
+	query:=FromReqQueryToModel(in)
+	list,err:=h.uc.GetAll(ctx,query)
+	if err!=nil{
+		h.logger.Errorf(err.Error())
+		return nil,err
+	}
+
+	res:=FromModelToResponseQuery(list)
+
+	return res,nil
 }

@@ -47,25 +47,17 @@ func (s Server) Run() error {
 
 
 	server:=grpc.NewServer()
-	pb.RegisterCreateTeacherServer(server,handler.NewTeacherHandler(uc.TeacherUsecase(),s.log))
 	
+	pb.RegisterUserServiceServer(server,handler.NewTeacherHandler(uc.TeacherUsecase(),s.log))
+	
+	names:=server.GetServiceInfo()
+	log.Println(names)
 	// pb.RegisterCreateTeacherServer(server,&Serve{})
 	err=server.Serve(lis)
 	if err!=nil{
 		log.Println(err)
-
-return err
+  		return err
 	}
 
 	return nil
 }
-// type Serve struct{
-// 	pb.UnimplementedCreateTeacherServer
-// }
-// func (h *Serve) CreateUser(ctx context.Context, req *pb.User) (*pb.ErrorResponse,error){
-// 	user:=handler.FromReqToModel(req)
-// 	log.Println(user)
-// 	return &pb.ErrorResponse{
-// 		ErrorMessage: "so bolasla",
-// 	},nil
-// }
