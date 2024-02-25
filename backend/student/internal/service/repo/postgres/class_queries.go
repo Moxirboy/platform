@@ -1,5 +1,5 @@
 package postgres
 
 const (
-	GetClass
+// GetClass
 )

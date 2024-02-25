@@ -111,7 +111,7 @@ mod-tidy:
 	docker compose exec app go mod tidy
 
 
-# moxirboy@moxirboy:~/Desktop/go/src/platform$    protoc --go_out=.  --go-grpc_out=. ./backend/api/proto/admin.proto
+# moxirboy@moxirboy:~/Desktop/go/src/platform$    protoc --go_out=.  --go-grpc_out=. admin.proto
 
 
 

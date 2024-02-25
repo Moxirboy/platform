@@ -6,23 +6,24 @@ import (
 	logger "admin/pkg/log"
 )
 
-func main(){
+func main() {
 
 	var (
-		config=configs.Load()
+		config = configs.Load()
 	)
-	log:=logger.NewLogger(config.Logger.Level,config.Logger.Encoding)
+	log := logger.NewLogger(config.Logger.Level, config.Logger.Encoding)
 	log.InitLogger()
 
-	log.Infof(
+	log.InfoF(
 		"AppVersion: %s, LogLevel: %s, Mode: %s",
 		config.AppVersion,
 		config.Logger.Level,
 		config.Server.Environment,
 	)
-	s:=server.NewServer(config,log)
+	s := server.NewServer(config, log)
 	log.Fatal(s.Run())
 }
+
 // type serve struct{
 // 	pb.UnimplementedCreateTeacherServer
 // }

@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+package teacher;
+
+option go_package = "../../teacher/proto/teacher";
+
+message AddTestRequest {
+  string QuestionId = 1;
+  string QuestionText = 2;
+  string TeacherID = 3;
+  string AnswerID = 4;
+  string ChoiceID = 5;
+}
+
+message CreateClass {
+  string ID = 1;
+  string TeacherID = 2;
+  string ClassID = 3;
+  string Period = 4;
+}
+
+message Response {
+  string Id = 1;
+}
+
+service UserService {
+  rpc AddTest(AddTestRequest) returns (Response);
+  rpc StartTest(CreateClass) returns (Response);
+}
