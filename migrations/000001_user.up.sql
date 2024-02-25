@@ -1,10 +1,16 @@
-CREATE TABLE "user" (
-    "id" SERIAL PRIMARY KEY,
-    "firstname" VARCHAR(255) NOT NULL,
-    "lastname" VARCHAR(255) NOT NULL,
-    "password" VARCHAR(255) NOT NULL,
-    "role" VARCHAR(255) NOT NULL DEFAULT 'user',
-    "created_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updated_at" TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "verified" BOOLEAN NOT NULL DEFAULT FALSE
-    );
+CREATE TYPE IF NOT EXISTS "user_role_enum" AS ENUM (
+  'admin',
+  'student',
+  'teacher'
+);
+
+CREATE TABLE IF NOT EXISTS "users" (
+  "id" uuid PRIMARY KEY,
+  "FirstName" varchar(20),
+  "LastName" varchar(20),
+  "Password" int NOT NULL,
+  "user_role" user_role_enum NOT NULL,
+  "created_at" timestamp DEFAULT (now()),
+  "updated_at" timestamp DEFAULT (now()),
+  "verified" BOOLEAN NOT NULL DEFAULT false
+);

@@ -1,7 +1,11 @@
-CREATE TABLE "answers" (
-    "id" SERIAL PRIMARY KEY,
-    "question_id" VARCHAR(60) NOT NULL,
-    "choice_id" VARCHAR(60) NOT NULL,
+CREATE TABLE IF NOT EXISTS "answers" (
+  "id" uuid PRIMARY KEY,
+  "question_id" uuid,
+  "choice_id" uuid,
+  "is_correct" boolean
 );
-ALTER TABLE "answers" ADD FOREIGN KEY ("question_id") REFERENCES "question" ("id");
-ALTER TABLE "answers" ADD FOREIGN KEY ("choice_id") REFERENCES "choices" ("id");
+
+
+ALTER TABLE "answers" ADD FOREIGN KEY ("question_id") REFERENCES "questions" ("id");
+
+ALTER TABLE "answers" ADD FOREIGN KEY ("choice") REFERENCES "choices" ("id");
