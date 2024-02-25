@@ -1,11 +1,12 @@
 package usecase
+
 import (
-	"context"
 	"admin/internal/models"
 	"admin/pkg/utils"
+	"context"
 )
 
-type ITeacherUsecase interface {
+type ITeacherUseCase interface {
 	Create(ctx context.Context, teacher *models.User) error
-	GetAll(ctx context.Context,PaginationQuery utils.PaginationQuery) (*models.UserList,error)
+	GetAll(ctx context.Context, PaginationQuery utils.PaginationQuery) (*models.UserList, error)
 }
