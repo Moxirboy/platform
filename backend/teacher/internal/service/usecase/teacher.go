@@ -18,10 +18,20 @@ func NewTeacherUseCase(repo repo.ITeacherRepository, log logger.Logger) ITeacher
 		log:  log,
 	}
 }
-func (t *TeacherUseCase) AddTest(ctx context.Context, request models.AddTestRequest) error {
-	if err := t.repo.AddTest(ctx, request); err != nil {
+func (t *TeacherUseCase) AddTest(ctx context.Context, request models.AddTestRequest) (string, error) {
+	questionID, err := t.repo.AddTest(ctx, request)
+	if err != nil {
 		t.log.Error("error is while add test", err.Error())
-		return err
+		return "", err
 	}
-	return nil
+	return questionID, nil
+}
+
+func (t *TeacherUseCase) StartTest(ctx context.Context, class models.CreateClass) (string, error) {
+	classID, err := t.repo.StartTest(ctx, class)
+	if err != nil {
+		t.log.Error("error is while starting test", err.Error())
+		return "", err
+	}
+	return classID, nil
 }

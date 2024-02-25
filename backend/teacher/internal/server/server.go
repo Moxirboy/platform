@@ -3,10 +3,13 @@ package server
 import (
 	"google.golang.org/grpc"
 	"log"
+	"net"
 	configs "teacher/internal/config"
+	"teacher/internal/controller/grpc/v3/handler"
 	"teacher/internal/service/usecase"
 	logger "teacher/pkg/log"
 	"teacher/pkg/postgres"
+	pb "teacher/proto"
 )
 
 type Server struct {
@@ -22,7 +25,7 @@ func NewServer(cfg *configs.Config, log logger.Logger) *Server {
 }
 
 func (s Server) Run() error {
-	// listen, err := net.Listen("tcp", ":5006")
+	listen, err := net.Listen("tcp", ":5008")
 	log.Println(listen)
 	if err != nil {
 		s.log.Fatalf("failed to listen: %v", err)
@@ -36,7 +39,7 @@ func (s Server) Run() error {
 
 	server := grpc.NewServer()
 
-	// pb.RegisterUserServiceServer(server, handler.NewTeacherHandler(uc.ITeacherUseCase(), s.log))
+	pb.RegisterUserServiceServer(server, handler.NewTeacherHandler(uc.ITeacherUseCase(), s.log))
 
 	names := server.GetServiceInfo()
 	log.Println(names)

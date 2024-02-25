@@ -27,7 +27,7 @@ type Config struct {
 	Setup    Setup
 	Telesign Telesign
 	Files    Files
-	RPC      RPC 
+	RPC      RPC
 }
 
 type (
@@ -53,7 +53,6 @@ type (
 	}
 
 	/* trunk-ignore(golangci-lint/goimports) */
-	
 
 	Postgres struct {
 		Port     uint16 `env:"POSTGRES_PORT"`
@@ -86,7 +85,7 @@ type (
 		ParcelsReportFilePath string `env:"PARCELS_EXCEL_FILE_PATH"`
 	}
 
-	RPC struct{
-		Port string `env:"ADMIN_RPC_PORT"`
+	RPC struct {
+		Port string `env:"TEACHER_RPC_PORT"`
 	}
 )

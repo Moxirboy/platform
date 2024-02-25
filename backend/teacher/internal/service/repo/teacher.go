@@ -6,5 +6,6 @@ import (
 )
 
 type ITeacherRepository interface {
-	AddTest(ctx context.Context, request models.AddTestRequest) error
+	AddTest(context.Context, models.AddTestRequest) (string, error)
+	StartTest(context.Context, models.CreateClass) (string, error)
 }

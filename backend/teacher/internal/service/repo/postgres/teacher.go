@@ -4,6 +4,7 @@ import (
 	logger "admin/pkg/log"
 	"context"
 	"database/sql"
+	"github.com/google/uuid"
 	"teacher/internal/models"
 )
 
@@ -19,7 +20,7 @@ func NewTeacherRepo(db *sql.DB, log logger.Logger) *teacherRepo {
 	}
 }
 
-func (t *teacherRepo) AddTest(ctx context.Context, request models.AddTestRequest) error {
+func (t *teacherRepo) AddTest(ctx context.Context, request models.AddTestRequest) (string, error) {
 	addTestQuery := `BEGIN;
 			                INSERT INTO question (id, text, teacher_id) 
                             VALUES($1, $2, $3);
@@ -35,14 +36,23 @@ func (t *teacherRepo) AddTest(ctx context.Context, request models.AddTestRequest
 		request.ChoiceID,
 	); err != nil {
 		t.log.Error("error is while adding test", err)
-		return err
+		return "", err
 	}
-	return nil
+	return request.QuestionID, nil
 }
 
-func (t *teacherRepo) StartTest(ctx context.Context) error {
-	return nil
-}
-func (t *teacherRepo) StudentStatistics(ctx context.Context) error {
-	return nil
+func (t *teacherRepo) StartTest(ctx context.Context, class models.CreateClass) (string, error) {
+	id := uuid.New()
+	createClassQuery := `insert into exam(id, teacher_id, class_id, period) 
+                                       values($1, $2, $3, $4);`
+	if _, err := t.db.ExecContext(ctx, createClassQuery,
+		id,
+		class.TeacherID,
+		class.ClassID,
+		class.Period,
+	); err != nil {
+		t.log.Error("error is while inserting exam", err.Error())
+		return "", err
+	}
+	return id.String(), nil
 }
