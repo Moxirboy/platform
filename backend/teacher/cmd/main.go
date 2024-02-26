@@ -7,6 +7,7 @@ import (
 )
 
 func main() {
+
 	var (
 		config = configs.Load()
 	)
@@ -22,4 +23,5 @@ func main() {
 
 	s := server.NewServer(config, log)
 	log.Fatal(s.Run())
+
 }

@@ -1,5 +1,6 @@
 package postgres
 
+
 type studentRepo struct{
 	db  *sql.DB
 	log logger.Logger

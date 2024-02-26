@@ -1,0 +1,49 @@
+/* App.css */
+.app {
+    text-align: center;
+}
+
+/* Header.css */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+}
+
+/* Dashboard.css */
+.dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+/* Box.css */
+.box {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+}
+
+.box .content {
+    text-align: left;
+}
+
+.box h2 {
+    margin-bottom: 10px;
+}
+
+.box button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.box button:hover {
+    background-color: #0056b3;
+}

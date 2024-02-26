@@ -8,19 +8,19 @@ services:
     working_dir: /app
     env_file:
       - .env
+    links: 
+            - db
     profiles:
       - donotstart
-    depends_on:
-      - db
   db:
     image: postgres:latest
     environment:
-      POSTGRES_DB: platform
       POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: platform
     ports:
-      - "5432:5005"
-    networks:
-      - platform
+      - 5432
+   
+
   admin:
     build:
       context: ./docker/backend
@@ -38,27 +38,9 @@ services:
       GOCACHE: /go-cache
     depends_on:
       - db
-    networks:
-      - platform
-  auth:
-    build:
-      context: ./docker/backend
-      dockerfile: Dockerfile
-    volumes:
-      - ./backend/auth:/auths  # Adjusted path to main.go
-      - ./.go/pkg:/go/pkg
-      - ./.auth_go_cache:/go-cache
-    working_dir: /auths
-    ports:
-      - "5007:5005"
-    env_file:
-      - .env
-    environment:
-      GOCACHE: /go-cache
-    depends_on:
-      - db
-    networks:
-      - platform
+    
+  
+
   student:
     build:
       context: ./docker/backend
@@ -76,6 +58,7 @@ services:
       GOCACHE: /go-cache
     depends_on:
       - db
+      
   teacher:
     build:
       context: ./docker/backend
@@ -114,9 +97,4 @@ services:
       - student
       - teacher
       - db
-    networks:
-      - platform
-
-networks:
-  platform:
-    driver: bridge
+    

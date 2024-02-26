@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Questionnaire</title>
+<style>
+body {
+    background-color: #fefefe; /* Milk color background */
+}
+
+.question-box {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(200, 150, 255, 0.5); /* Light purple box shadow */
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    margin-bottom: 0.5em;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+.timer-container {
+    text-align: center;
+    margin-bottom: 20px;
+    border-radius: 50%;
+    border: solid 2px #007bff;
+    width: auto;
+    position: sticky;
+    top: 0; /* Stick to the top of the viewport */
+    background-color: transparent; /* Make the background transparent */
+    z-index: 1000;
+    transition: background-color 1s ease; /* Smooth transition */
+}
+
+.timer-ending {
+    background-color: #ff6347; /* Red color for ending timer */
+}
+</style>
+</head>
+<body>
+<div class="timer-container" id="timer"></div>
+<div id="questionnaire"></div>
+
+<script>
+const itemsPerPage = 10;
+let currentPage = 0;
+let timeRemaining = localStorage.getItem('timeRemaining') || 600; // Total time in seconds, read from local storage
+let questions = JSON.parse(localStorage.getItem('savedAnswers')) || []; // Array to store questions and saved answers
+
+// Function to fetch questions from the backend
+async function fetchQuestions() {
+  try {
+    const response = await fetch('http://localhost:5005/questions'); // Replace with your backend URL
+    if (!response.ok) {
+      throw new Error('Failed to fetch questions');
+    }
+    const data = await response.json();
+    questions = data.questions; // Store fetched questions
+    render();
+    startTimer();
+  } catch (error) {
+    console.error('Error fetching questions:', error);
+  }
+}
+
+// Function to render choices for a question
+function renderChoices(choices, questionId) {
+  return choices.map((choice, index) => (
+    `<div key="${index}">
+      <input type="radio" id="${questionId}_choice${index}" name="question_${questionId}" value="${index}" ${questions.some(q => q.questionId === questionId && q.answerIndex === index) ? 'checked' : ''}/>
+      <label for="${questionId}_choice${index}">${choice}</label>
+    </div>`
+  )).join('');
+}
+
+// Function to render a single question
+function renderQuestion(question) {
+  return `<div key="${question.id}" class="question-box">
+            <h3>${question.text}</h3>
+            ${renderChoices(question.choices, question.id)}
+          </div>`;
+}
+
+// Function to render questions on the current page
+function renderQuestions() {
+  const startIndex = currentPage * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  return questions.slice(startIndex, endIndex).map(renderQuestion).join('');
+}
+
+// Function to handle next page button click
+function handleNextPage() {
+  currentPage++;
+  render();
+}
+
+// Function to handle previous page button click
+function handlePreviousPage() {
+  currentPage = Math.max(currentPage - 1, 0);
+  render();
+}
+
+// Function to send marked answers to the backend for scoring
+async function sendMarkedAnswers() {
+  try {
+    const response = await fetch('http://localhost:5005/check-answers', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(questions)
+    });
+    if (!response.ok) {
+      throw new Error('Failed to check answers');
+    }
+    const data = await response.json();
+    alert(`Your score: ${data.score}/${data.totalQuestions}`);
+  } catch (error) {
+    console.error('Error checking answers:', error);
+  }
+}
+
+// Function to update the timer every second
+function startTimer() {
+  const timerElement = document.getElementById('timer');
+  const timerInterval = setInterval(() => {
+    timeRemaining--;
+    localStorage.setItem('timeRemaining', timeRemaining); // Save timeRemaining to local storage
+    const minutes = Math.floor(timeRemaining / 60);
+    const seconds = timeRemaining % 60;
+    timerElement.innerHTML = `<div class="timer">Time Remaining: ${minutes} minutes ${seconds} seconds</div>`;
+    if (timeRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerElement.innerHTML = `<div class="timer">Time's up!</div>`;
+      sendMarkedAnswers();
+    } else if (timeRemaining <= 60) {
+      timerElement.classList.add('timer-ending'); // Apply timer-ending class for smooth transition
+    }
+  }, 1000); // Update every second
+}
+
+async function render() {
+  const timerContainer = document.getElementById('timer');
+  const questionnaireDiv = document.getElementById('questionnaire');
+  timerContainer.innerHTML = `<div class="timer">Time Remaining: ${Math.floor(timeRemaining / 60)} minutes ${timeRemaining % 60} seconds</div>`;
+  
+  const isLastPage = ((currentPage + 1) * itemsPerPage >= questions.length);
+
+  questionnaireDiv.innerHTML = renderQuestions() + `
+    <div class="button-container">
+      <button onclick="handlePreviousPage()" ${currentPage === 0 ? 'disabled' : ''}>Previous</button>
+      ${isLastPage ? '<button onclick="sendMarkedAnswers()">Submit Answers</button>' : '<button onclick="handleNextPage()">Next</button>'}
+    </div>
+  `;
+}
+
+// Add event listener to save selected answer
+document.addEventListener('change', (event) => {
+  if (event.target.matches('input[type="radio"]')) {
+    const questionId = parseInt(event.target.name.split('_')[1]);
+    const answerIndex = parseInt(event.target.value);
+    const existingQuestionIndex = questions.findIndex(q => q.questionId === questionId);
+    if (existingQuestionIndex !== -1) {
+      questions[existingQuestionIndex].answerIndex = answerIndex;
+    } else {
+      questions.push({ questionId, answerIndex });
+    }
+    localStorage.setItem('savedAnswers', JSON.stringify(questions)); // Save questions and answers to local storage
+  }
+});
+
+// Call fetchQuestions on page load
+fetchQuestions().catch(console.error);
+</script>
+</body>
+</html>

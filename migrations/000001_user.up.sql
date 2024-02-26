@@ -1,4 +1,5 @@
 
+
 create type user_role_enum as enum ('admin', 'teacher', 'student');
 
 CREATE TABLE "user" (

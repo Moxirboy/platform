@@ -8,7 +8,8 @@ type Admin struct {
 
 type User struct {
 	ID        string
-	Username  string
+	Firstname  string
+	Lastname  string
 	Password  string
 	Role      string
 	CreatedAt string

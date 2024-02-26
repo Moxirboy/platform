@@ -9,8 +9,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-
-
 func SetUp(
 	g *gin.Engine,
 	cfg configs.Config,
@@ -23,7 +21,7 @@ func SetUp(
 		client,
 		log,
 	)
-	
+
 }
 
 func SetUpHandlerV1(
@@ -33,6 +31,11 @@ func SetUpHandlerV1(
 	log logger.Logger,
 ) {
 	handler.NewTeacherHandler(
+		Group,
+		client,
+		log,
+	)
+	handler.NewAuthHandler(
 		Group,
 		client,
 		log,

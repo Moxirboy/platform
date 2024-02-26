@@ -26,4 +26,6 @@ message Response {
 service UserService {
   rpc AddTest(AddTestRequest) returns (Response);
   rpc StartTest(CreateClass) returns (Response);
+
 }
+

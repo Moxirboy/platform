@@ -1,5 +1,6 @@
 package usecase
 
+
 type IStudentUsecase interface {
 	StudentUsecase() IStudentUsecase
 }
@@ -27,3 +28,5 @@ func New(
 func (c *UseCase) StudentUsecase() IStudentUsecase {
 	return c.connections[_studentUseCase].(IStudentUsecase)
 }
+
+

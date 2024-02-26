@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Link to your CSS file -->
+    <style>
+        /* App.css */
+.app {
+    text-align: center;
+}
+
+/* Header.css */
+header {
+    background-color: #333;
+    color: #fff;
+    padding: 20px 0;
+    text-align: center;
+}
+
+/* Dashboard.css */
+.dashboard {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+/* Box.css */
+.box {
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+}
+
+.box .content {
+    text-align: left;
+}
+
+.box h2 {
+    margin-bottom: 10px;
+}
+
+.box button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.box button:hover {
+    background-color: #0056b3;
+}
+
+    </style>
+</head>
+<body>
+    <div>
+        <!-- Header Component -->
+        <header>
+            <h1>Website Header</h1>
+        </header>
+    </div>
+    <div>
+        <!-- Box Component -->
+        <div class="box">
+            <div class="content">
+                <h2>Dashboard Text</h2>
+                <p id="dashboardText"></p>
+                <!-- Button to navigate to "/test" (conditionally displayed) -->
+                <button id="testButton" style="display: none;">Start</button>
+            </div>
+        </div>
+    </div>
+    <script>document.addEventListener("DOMContentLoaded", function() {
+        // Fetch the dashboard text from the server
+        fetch("/test-available")
+            .then(response => response.json())
+            .then(data => {
+                // Update the dashboard text
+                document.getElementById("dashboardText").textContent = data.dashboardText;
+    
+                // Conditionally display the test button based on server response
+                if (data.testAvailable) {
+                    document.getElementById("testButton").style.display = "block";
+                    document.getElementById("testButton").addEventListener("click", function() {
+                        window.location.href = "/test";
+                    });
+                } else {
+                    document.getElementById("testButton").style.display = "none";
+                }
+            })
+            .catch(error => {
+                console.error("Error fetching test availability:", error);
+            });
+    });
+    </script> <!-- Link to your JavaScript file -->
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+  <style>
+    .login-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-box {
+  width: 300px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px hsla(220, 2%, 37%, 0.102);
+}
+
+.input-group {
+  margin-bottom: 15px;
+  padding-right: 1.5em;
+}
+
+input[type='text'],
+input[type='password'] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  outline: none;
+}
+
+button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.link {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.link p {
+  display: inline;
+}
+
+  </style>
+</head>
+<body>
+  <div class="login-container">
+    <div class="login-box">
+      <h2>Login</h2>
+      <form id="login-form" >
+        <div class="input-group">
+          <input id="firstName" type="text" name="firstName" placeholder="First Name" required>
+        </div>
+        <div class="input-group">
+          <input id="lastName" type="text" name="lastName" placeholder="Last Name" required>
+        </div>
+        <div class="input-group">
+          <input id="password" type="password" name="password" placeholder="Password" required>
+        </div>
+        <div class="link">
+          <p>Not Registered? <a href="/signup">Sign up</a></p>
+        </div>
+        <button onclick="SubmitEvent()">Login</button>
+      </form>
+    </div>
+  </div>
+  <script>
+   function SubmitEvent() {
+  const firstName = document.getElementById('firstName').value;
+  const lastName = document.getElementById('lastName').value;
+  const password = document.getElementById('password').value;
+
+  const body = JSON.stringify({
+    firstName: firstName,
+    lastName: lastName,
+    password: password
+  });
+
+  fetch('http://localhost:5005/v1/auth/loginpost', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: body
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    } 
+    
+    return response.json();
+  })
+  .then(data => {
+    console.log(data);
+  })
+  .catch(error => {
+    console.error('Error:', error);
+  });
+}
+
+  </script>
+</body>
+</html>
