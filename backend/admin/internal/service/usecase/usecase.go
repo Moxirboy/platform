@@ -5,12 +5,14 @@ import (
 	"admin/pkg/utils"
 	"context"
 	domain "admin/internal/models"
+
 )
 
-type ITeacherUsecase interface {
+type ITeacherUseCase interface {
 	Create(ctx context.Context, teacher *models.User) error
 	GetAll(ctx context.Context, PaginationQuery utils.PaginationQuery) (*models.UserList, error)
 }
+
 
 
 type AuthUsecase interface {
@@ -34,3 +36,4 @@ type AuthUsecase interface {
 		error,
 	)
 }
+
