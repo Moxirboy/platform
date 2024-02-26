@@ -1,5 +1,8 @@
-CREATE TABLE "question" (
-    "id" SERIAL PRIMARY KEY,
-    "text" TEXT NOT NULL,
-    "teacher_id" VARCHAR(20) NOT NULL
+
+CREATE TABLE IF NOT EXISTS "questions" (
+  "id" uuid PRIMARY KEY,
+  "questions_text" text NOT NULL,
+  "teacher_id" uuid
 );
+
+ALTER TABLE "questions" ADD FOREIGN KEY ("teacher_id") REFERENCES "users" ("id");

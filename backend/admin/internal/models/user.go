@@ -1,27 +1,27 @@
 package models
 
 type Admin struct {
-	ID string
-	Username string	
+	ID       string
+	Username string
 	Password string
 }
 
 type User struct {
-	ID string
-	Username string
-	Password string
-	Role string
+	ID        string
+	Username  string
+	Password  string
+	Role      string
 	CreatedAt string
-	UpdateAt string
+	UpdateAt  string
 	DeletedAt string
-	Verified bool
+	Verified  bool
 }
 
-type UserList struct{
+type UserList struct {
 	TotalCount int
 	TotalPages int
-	Page int
-	Size int
-	HasMore bool
-	Users []*User
+	Page       int
+	Size       int
+	HasMore    bool
+	Users      []*User
 }

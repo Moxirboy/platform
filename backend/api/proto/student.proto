@@ -1,0 +1,29 @@
+syntax="proto3";
+
+package auth;
+
+service AuthService {
+    rpc TakeExam(models.CreateAnswers) returns(models.TestResult){}
+    rpc GetTestResult(string) returns(models.TestResult){}
+}
+
+message Questions{
+   id string 
+   examID string
+   QuestionText string
+
+
+}
+message TestResult{
+    result string
+} 
+message Answersswers{
+    result string
+    id string
+    questionID string
+    choiceID string
+    isCorrect bool
+}
+message CreateAnswers{
+    answers []answers
+}
