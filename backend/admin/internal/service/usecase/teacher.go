@@ -8,32 +8,31 @@ import (
 	"context"
 )
 
-
 type TeacherUsecase struct {
 	repo repo.ITeacherRepository
-	log logger.Logger
+	log  logger.Logger
 }
 
 func NewTeacherUseCase(repo repo.ITeacherRepository, log logger.Logger) ITeacherUsecase {
 	return &TeacherUsecase{
-		repo:repo,
-		log:log,
+		repo: repo,
+		log:  log,
 	}
 }
 
 func (u *TeacherUsecase) Create(ctx context.Context, teacher *models.User) error {
-	err:=u.repo.Create(ctx,teacher)
-	if err!=nil{
+	err := u.repo.Create(ctx, teacher)
+	if err != nil {
 		u.log.Errorf(err.Error())
 		return err
 	}
 	return nil
 }
-func (u *TeacherUsecase) 	GetAll(ctx context.Context,PaginationQuery utils.PaginationQuery) (*models.UserList,error){
-	list,err:=u.repo.GetAll(ctx,PaginationQuery)
-	if err!=nil{
+func (u *TeacherUsecase) GetAll(ctx context.Context, PaginationQuery utils.PaginationQuery) (*models.UserList, error) {
+	list, err := u.repo.GetAll(ctx, PaginationQuery)
+	if err != nil {
 		u.log.Errorf(err.Error())
-		return nil,err
+		return nil, err
 	}
-	return list,nil
+	return list, nil
 }

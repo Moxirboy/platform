@@ -1,8 +1,34 @@
+-include .env
+export
+
 FOLDERS ?= ./cmd/... ./pkg/... ./internal/...
 PROJECT=$(shell basename ${CURRENT_DIR})
 CURRENT_DIR=$(shell pwd)
 PKG_LIST := $(shell go list ./...)
 UNAME := $(shell uname)
+DOCKER_COMPOSE_FILE=docker-compose.yaml
+
+
+arg = $(filter-out $@,$(MAKECMDGOALS))
+
+.PHONY: start
+start:
+	@echo "Start Containers"
+	docker compose -f ${DOCKER_COMPOSE_FILE} up -d ${DOCKER_SERVICES}
+	sleep 2
+	docker compose -f ${DOCKER_COMPOSE_FILE} ps
+
+.PHONY: stop
+stop:
+	@echo "Stop Containers"
+	docker compose -f ${DOCKER_COMPOSE_FILE} stop ${DOCKER_SERVICES}
+	sleep 2
+	docker compose -f ${DOCKER_COMPOSE_FILE} ps
+
+.PHONY: stop
+rm: stop
+	@echo "Remove Containers"
+	docker compose -f ${DOCKER_COMPOSE_FILE} rm -v -f ${DOCKER_SERVICES}
 
 install-dep:
 	go install github.com/segmentio/golines@v0.5.0
@@ -84,7 +110,7 @@ git-pull:
 migration-up:
 	@echo "Migrations Up"
 	sleep 2
-	docker compose run --rm migrate -path=migrations/ -database='postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable' up
+	docker compose run --rm migrate -path=./migrations/ -database='postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DATABASE}?sslmode=disable' force 3  up
 
 .PHONY: migration-generate
 migration-generate:

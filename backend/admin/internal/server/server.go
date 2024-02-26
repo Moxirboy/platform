@@ -10,10 +10,9 @@ import (
 	"admin/pkg/postgres"
 	pb "admin/proto"
 	"net"
-
+	"admin/proto/authpb"
 	"google.golang.org/grpc"
 )
-
 
 type Server struct {
 	cfg *configs.Config
@@ -29,34 +28,34 @@ func NewServer(
 		log: log,
 	}
 }
+
 func (s Server) Run() error {
-	lis,err:=net.Listen("tcp",":5006")
+	lis, err := net.Listen("tcp", ":5006")
 	log.Println(lis)
 	if err != nil {
 		s.log.Fatalf("failed to listen: %v", err)
 	}
-	pg,err:=postgres.DB(
+	pg, err := postgres.DB(
 		&s.cfg.Postgres,
 	)
-	if err!=nil{
+	if err != nil {
 		s.log.Fatal(
 			err,
 		)
-	} 
-	uc:=usecase.New(pg,s.log)
+	}
+	uc := usecase.New(pg, s.log)
 
+	server := grpc.NewServer()
 
-	server:=grpc.NewServer()
-	
-	pb.RegisterUserServiceServer(server,handler.NewTeacherHandler(uc.TeacherUsecase(),s.log))
-	
-	names:=server.GetServiceInfo()
+	pb.RegisterUserServiceServer(server, handler.NewTeacherHandler(uc.TeacherUsecase(), s.log))
+	authpb.RegisterAuthServiceServer(server, handler.NewAuthHandler(uc.AuthUseCase(), s.log))
+	names := server.GetServiceInfo()
 	log.Println(names)
 	// pb.RegisterCreateTeacherServer(server,&Serve{})
-	err=server.Serve(lis)
-	if err!=nil{
+	err = server.Serve(lis)
+	if err != nil {
 		log.Println(err)
-  		return err
+		return err
 	}
 
 	return nil

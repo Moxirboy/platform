@@ -19,16 +19,16 @@ type Config struct {
 	AppName    string `env:"APP_NAME"`
 	AppVersion string `env:"APP_VERSION"`
 
-	Server   Server
-	Logger   Logger
-	Postgres Postgres
-	Casbin   Casbin
-	JWT      JWT
-	Setup    Setup
-	Telesign Telesign
-	Files    Files
-	Admin_RPC Admin_RPC 
-	Auth_RPC Auth_RPC
+	Server    Server
+	Logger    Logger
+	Postgres  Postgres
+	Casbin    Casbin
+	JWT       JWT
+	Setup     Setup
+	Telesign  Telesign
+	Files     Files
+	Admin_RPC Admin_RPC
+	Auth_RPC  Auth_RPC
 	HTTP_Port HTTP_Port
 }
 
@@ -42,7 +42,7 @@ type (
 		MaxConnectionAge  uint16 `env:"SERVER_MAX_CONNECTION_AGE"`
 	}
 
-	HTTP_Port struct{
+	HTTP_Port struct {
 		HTTP_Port string `env:"HTTP_PORT"`
 	}
 
@@ -59,7 +59,6 @@ type (
 	}
 
 	/* trunk-ignore(golangci-lint/goimports) */
-	
 
 	Postgres struct {
 		Port     uint16 `env:"POSTGRES_PORT"`
@@ -92,12 +91,12 @@ type (
 		ParcelsReportFilePath string `env:"PARCELS_EXCEL_FILE_PATH"`
 	}
 
-	Admin_RPC struct{
+	Admin_RPC struct {
 		Hosts string `env:"ADMIN_RPC_HOST"`
-		Port string `env:"ADMIN_RPC_PORT"`
+		Port  string `env:"ADMIN_RPC_PORT"`
 	}
-	Auth_RPC struct{
+	Auth_RPC struct {
 		Hosts string `env:"AUTH_RPC_HOST"`
-		Port string `env:"AUTH_RPC_PORT"`
+		Port  string `env:"AUTH_RPC_PORT"`
 	}
 )

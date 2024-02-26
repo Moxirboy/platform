@@ -3,7 +3,7 @@ syntax="proto3";
 
 package admin;
 
-option go_package =".";
+option go_package ="../../admin/proto";
 
 message PaginationQuery {
   int32 size = 1;
@@ -13,7 +13,8 @@ message PaginationQuery {
 
 message User {
   string ID = 1;
-  string Username = 2;
+  string Firstname = 2;
+  string Lastname = 9;
   string Password = 3;
   string Role = 4;
   string CreatedAt = 5;
