@@ -1,3 +1,4 @@
+
 CREATE TABLE IF NOT EXISTS "questions" (
   "id" uuid PRIMARY KEY,
   "questions_text" text NOT NULL,

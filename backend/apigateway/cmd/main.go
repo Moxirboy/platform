@@ -6,42 +6,35 @@ package main
 // 	logger "gateway/pkg/log"
 // )
 import (
-	
 	configs "gateway/internal/config"
 
 	"gateway/internal/server"
 	logger "gateway/pkg/log"
-	
-
-	
 )
 
-
-func main(){
+func main() {
 	var (
 		config = configs.Load()
 	)
 	log := logger.NewLogger(config.Logger.Level, config.Logger.Encoding)
 	log.InitLogger()
- 
-	log.Infof(
+
+	log.InfoF(
 		"AppVersion: %s, LogLevel: %s, Mode: %s",
 		config.AppVersion,
 		config.Logger.Level,
 		config.Server.Environment,
 	)
-	s:=server.NewServer(config,log)
-	
+	s := server.NewServer(config, log)
+
 	log.Fatal(s.Run())
 
 	// conn,err:=grpc.Dial("0.0.0.0:5006",grpc.WithInsecure())
 	// if err!=nil{
-		
+
 	// 	log.Println("here")
 
-	// } 
-
-
+	// }
 
 	// log.Println(conn)
 	// defer conn.Close()
@@ -59,7 +52,6 @@ func main(){
 	// })
 
 	// log.Println(err)
-	 
 
 	// fmt.Println(res)
 }

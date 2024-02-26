@@ -86,7 +86,7 @@ services:
       - ./.teacher_go_cache:/go-cache # Use individual cache per service
     working_dir: /teachers
     ports:
-      - "8083:8083" # Use unique port for each service
+      - "5008:5008" # Use unique port for each service
     env_file:
       - .env
     environment:
