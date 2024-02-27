@@ -9,24 +9,24 @@ services:
     env_file:
       - .env
     links: 
-            - db
+      - db
     profiles:
       - donotstart
+
   db:
     image: postgres:latest
     environment:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: platform
     ports:
-      - 5432
-   
+      - "5432"
 
   admin:
     build:
       context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
-      - ./backend/admin:/admins  # Adjusted path to main.go
+      - ./backend/admin:/admins
       - ./.go/pkg:/go/pkg
       - ./.admin_go_cache:/go-cache
     working_dir: /admins
@@ -38,8 +38,6 @@ services:
       GOCACHE: /go-cache
     depends_on:
       - db
-    
-  
 
   student:
     build:
@@ -47,28 +45,26 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./backend/student:/students
-      - ./.go/pkg:/go/pkg # Consider separate volume for each service
-      - ./.student_go_cache:/go-cache # Use individual cache per service
+      - ./.go/pkg:/go/pkg
+      - ./.student_go_cache:/go-cache
     working_dir: /students
     ports:
-      - "5007:5005" # Use unique port for each service
+      - "5007:5005"
     env_file:
       - .env
     environment:
       GOCACHE: /go-cache
     depends_on:
       - db
-      
-  
-  
+
   app:
     build:
       context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/apigateway:/apigateway
-      - ./.go/pkg:/go/pkg # Consider separate volume for each service
-      - ./.gateway_go_cache:/go-cache # Use individual cache per service
+      - ./.go/pkg:/go/pkg
+      - ./.gateway_go_cache:/go-cache
     working_dir: /apigateway
     ports:
       - "5005:5005"
@@ -81,22 +77,30 @@ services:
       - student
       - teacher
       - db
-  
+
   teacher:
     build:
       context: ./docker/backend
       dockerfile: Dockerfile
     volumes:
       - ./backend/teacher:/teachers
-      - ./.go/pkg:/go/pkg # Consider separate volume for each service
-      - ./.teacher_go_cache:/go-cache # Use individual cache per service
+      - ./.go/pkg:/go/pkg
+      - ./.teacher_go_cache:/go-cache
     working_dir: /teachers
     ports:
-      - "5008:5005" # Use unique port for each service
+      - "5008:5005"
     env_file:
       - .env
     environment:
       GOCACHE: /go-cache
     depends_on:
       - db
-    
+
+  nginx:
+   image: nginx:latest
+   ports:
+    - "80:80"
+   volumes:
+    - './docker/nginx/conf.d:/etc/nginx/conf.d'
+
+
