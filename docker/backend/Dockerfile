@@ -10,6 +10,7 @@
 
 FROM golang:1.22.0-alpine3.19 as builder    
 
+RUN apk add --no-cache bash
 # RUN go install github.com/cespare/reflex@v0.3.1
 
 # COPY reflex.conf /
