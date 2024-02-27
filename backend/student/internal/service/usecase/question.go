@@ -36,12 +36,7 @@ func (u *questionUsecase) GetAllQuestions(ctx context.Context, examId string) ([
 			return nil, err
 		}
 		questions[i].Choices = choices
-		answer, err := u.repo.GetAnswer(ctx, question.Id)
-		if err != nil {
-			u.log.Errorf(err.Error())
-			return nil, err
-		}
-		questions[i].Answer = answer
+		
 	}
 
 	return questions, nil

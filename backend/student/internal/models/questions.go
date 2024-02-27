@@ -22,10 +22,10 @@ type QuestionsAll struct {
 	Id string 
 	QuestionText string
 	Choices []Choices
-	Answer string
 }
 
 type Choices struct {
 	Id string
 	ChoiceText string
+	Is_correct bool
 }

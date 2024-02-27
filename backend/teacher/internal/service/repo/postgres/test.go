@@ -54,24 +54,12 @@ func (r *testRepo) CreateTest(
 				ctx,
 				CreateChoice,
 				&choice.ChoiceText,
+				&choice.IsAnswer,
 			).Scan(&Choiceid)
 			if err != nil {
 				tx.Rollback()
 				r.log.Error("error is while creating test", err.Error())
 				return err
-			}
-			if choice.IsAnswer {
-				_, err := tx.ExecContext(
-					ctx,
-					CreateAnswer,
-					&Questionid,
-					&Choiceid,
-				)
-				if err != nil {
-					tx.Rollback()
-					r.log.Error("error is while creating test", err.Error())
-					return err
-				}
 			}
 		}
 	}

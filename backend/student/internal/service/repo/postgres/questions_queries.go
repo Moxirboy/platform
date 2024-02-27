@@ -9,7 +9,7 @@ const (
 
 	`
 	GetChoices = `
-	select id,choice_text from choices where question_id = $1
+	select id,choice_text,is_correct from choices where question_id = $1
 	`
 	GetAnswer = `
 	select choice_id from answer where question_id = $1 

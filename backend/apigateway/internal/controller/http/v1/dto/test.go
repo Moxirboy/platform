@@ -10,6 +10,7 @@ type Question struct {
 type Choices struct {
 	Id 			  string      `json:"id"`
 	ChoiceText    string   `json:"choiceText"`
+	IsCorrect bool `json:"is_correct"`
 }
 
 type Answer struct {

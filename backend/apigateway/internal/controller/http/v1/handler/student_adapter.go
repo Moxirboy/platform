@@ -49,4 +49,5 @@ func FromChoiceProtoToDto(
 	return &dto.Choices{
 		Id:  res.Id,
 		ChoiceText: res.Choices,
+		IsCorrect: res.IsCorrect,
 }}

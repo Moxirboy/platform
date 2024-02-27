@@ -58,16 +58,18 @@ func (r *questionRepo) GetChoices(ctx context.Context, questionId string) ([]mod
 		GetChoices,
 		&questionId,
 	)
-	defer rows.Close()
 	if err!=nil{
 		r.log.Errorf(err.Error())
 		return []models.Choices{},err
 	}
+	defer rows.Close()
+
 	for rows.Next(){
 		choice:=models.Choices{}
 		err:=rows.Scan(
 			&choice.Id,
 			&choice.ChoiceText,
+			&choice.Is_correct,
 		)
 		if err!=nil{
 			r.log.Errorf(err.Error())

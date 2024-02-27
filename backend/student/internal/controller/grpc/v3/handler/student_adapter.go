@@ -13,6 +13,7 @@ func ConvertToTestResponse(questions []models.QuestionsAll) *pb.TestResponse {
             c := &pb.Choices{
                 Id:         choice.Id,
                 Choices: choice.ChoiceText,
+                IsCorrect:  choice.Is_correct,
             }
             choices = append(choices, c)
         }
@@ -21,7 +22,7 @@ func ConvertToTestResponse(questions []models.QuestionsAll) *pb.TestResponse {
             Id:       q.Id,
             Question: q.QuestionText,
             Choices:  choices,
-            Answer:   q.Answer,
+            
         }
         tests = append(tests, test)
     }
@@ -31,11 +32,11 @@ func ConvertToTestResponse(questions []models.QuestionsAll) *pb.TestResponse {
     }
 }
 
-func choicesToStrings(choices []*pb.Choices) []string {
-    var choiceStrings []string
-    for _, choice := range choices {
+// func choicesToStrings(choices []*pb.Choices) []string {
+//     var choiceStrings []string
+//     for _, choice := range choices {
 		
-        choiceStrings = append(choiceStrings, choice.Choices)
-    }
-    return choiceStrings
-}
+//         choiceStrings = append(choiceStrings, choice.Choices)
+//     }
+//     return choiceStrings
+// }
