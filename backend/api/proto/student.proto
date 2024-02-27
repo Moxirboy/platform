@@ -2,28 +2,34 @@ syntax="proto3";
 
 package auth;
 
-service AuthService {
-    rpc TakeExam(models.CreateAnswers) returns(models.TestResult){}
-    rpc GetTestResult(string) returns(models.TestResult){}
+option go_package = "../../student/proto/exam";
+
+service TestService {
+    rpc TakeExamQuestions(TestTake) returns (TestResponse) {}
+    rpc GetExamExist(IdRequest) returns (IdResponse) {}
 }
 
-message Questions{
-   id string 
-   examID string
-   QuestionText string
-
-
+message Test {
+    string id=1;
+    string question=2;
+    repeated Choices choices=3;
+    string answer=4;
 }
-message TestResult{
-    result string
-} 
-message Answersswers{
-    result string
-    id string
-    questionID string
-    choiceID string
-    isCorrect bool
+message Choices {
+    string Id=1;
+    string choices=2;
 }
-message CreateAnswers{
-    answers []answers
+message TestResponse{
+    repeated Test test=1;
+}
+message TestTake{
+    string exam_id=1;
+}
+
+message IdRequest{
+    string id=1;
+}
+message IdResponse {
+    bool exist=1;
+    string id=2;
 }

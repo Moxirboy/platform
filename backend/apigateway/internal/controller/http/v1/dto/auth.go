@@ -5,8 +5,9 @@ type LoginRequest struct {
 	Lastname  string `json:"lastname"`	
 	Password string `json:"password"`
 }
-type LoginResponse struct {
+type Response struct {
 	Token string `json:"token"`
+	Role string `json:"role"`
 }
 
 type SignUpRequest struct {

@@ -2,30 +2,66 @@ package handler
 
 import (
 	"teacher/internal/models"
-	pb "teacher/proto"
+	tb "teacher/proto/teacher"
 )
 
-func FromRequestToModel(request *pb.AddTestRequest) models.AddTestRequest {
-	return models.AddTestRequest{
-		QuestionID:   request.QuestionId,
-		QuestionText: request.QuestionText,
-		TeacherID:    request.TeacherID,
-		AnswerID:     request.AnswerID,
-		ChoiceID:     request.ChoiceID,
+
+func FromRequestClassToModel(
+	req *tb.Class,
+) *models.Class {
+	return &models.Class{
+		TeacherID: req.TeacherID,
+		Name:      req.Name,
+		Password:  req.Password,
 	}
 }
-
-func FromModelToResponse(id string) *pb.Response {
-	return &pb.Response{
+func FromModelToResponseClass(id string) *tb.Response {
+	return &tb.Response{
 		Id: id,
 	}
 }
 
-func FromReqToModel(request *pb.CreateClass) models.CreateClass {
-	return models.CreateClass{
-		ID:        request.ID,
-		TeacherID: request.TeacherID,
-		ClassID:   request.ClassID,
-		Period:    request.Period,
+func FromRequestExamToModel(
+	
+	req *tb.Exam,
+) *models.Exam {
+	return &models.Exam{
+		TeacherID: req.TeacherID,
+		Name:   req.Name,
+
+	}
+}
+
+func FromRequestTestsToModel(
+	req *tb.Tests,
+) []*models.Test {
+	tests:=[]*models.Test{}
+	for _,v:=range req.Tests{
+		tests=append(tests,FromRequestTestToModel(v))
+	}
+	return tests
+}
+
+
+func FromRequestTestToModel(
+	req *tb.Test,
+) *models.Test {
+	choice:=[]*models.Choice{}
+	for _,v:=range req.Choices{
+		choice=append(choice,FromRequestChoicesToModel(v))
+	}
+	return &models.Test{
+		QuestionText: req.QuestionText,
+		Choices:      choice,
+		Answer:       req.Answer,
+	}
+}
+
+func FromRequestChoicesToModel(
+	req *tb.Choice,
+) *models.Choice {
+	return &models.Choice{
+		ChoiceText: req.ChoiceText,
+		IsAnswer:   req.IsAnswer,
 	}
 }

@@ -17,3 +17,15 @@ type Answers struct {
 type CreateAnswers struct{
 	Answers []Answers
 }
+
+type QuestionsAll struct {
+	Id string 
+	QuestionText string
+	Choices []Choices
+	Answer string
+}
+
+type Choices struct {
+	Id string
+	ChoiceText string
+}

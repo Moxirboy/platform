@@ -10,12 +10,12 @@ import (
 
 type teacher struct {
 	pb.UnimplementedUserServiceServer
-	uc     usecase.ITeacherUsecase
+	uc     usecase.ITeacherUseCase
 	logger logger.Logger
 }
 
 func NewTeacherHandler(
-	usecase usecase.ITeacherUsecase,
+	usecase usecase.ITeacherUseCase,
 	log logger.Logger,
 ) *teacher {
 	return &teacher{

@@ -22,10 +22,36 @@ message CreateClass {
 message Response {
   string Id = 1;
 }
+message Class {
+  string teacherID = 1;
+  string name=2;
+  string password=3;
+}
+message Exam {
+  string teacherID = 1;
+  string name = 2;
+}
+message Tests{
+  string teacherID = 1;
+  repeated Test tests = 2;
 
-service UserService {
-  rpc AddTest(AddTestRequest) returns (Response);
-  rpc StartTest(CreateClass) returns (Response);
+}
+message Test {
+  string questionText = 1;
+  repeated choice choices = 2;
+  string answer = 3;
+}
+
+message choice {
+  string choiceText = 1;
+  bool isAnswer = 2;
+}
+message Res {
+}
+service TeacherService {
+  rpc CreateTest(Tests) returns (Res);
+  rpc CreateExam(Exam) returns (Response);
+  rpc ClassCreate(Class) returns (Response);
 
 }
 

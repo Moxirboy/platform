@@ -2,51 +2,66 @@ package handler
 
 import (
 	"context"
-	"log"
+	
 	"teacher/internal/service/usecase"
 	logger "teacher/pkg/log"
-	pb "teacher/proto"
+	tp "teacher/proto/teacher"
 )
 
 type Teacher struct {
-	pb.UnimplementedUserServiceServer
+	tp.UnimplementedTeacherServiceServer
 	uc     usecase.ITeacherUseCase
+	u 	usecase.IExamUseCase
 	logger logger.Logger
 }
 
-func NewTeacherHandler(useCase usecase.ITeacherUseCase, log logger.Logger) *Teacher {
+
+func NewTeacherHandler(useCase usecase.ITeacherUseCase,u 	usecase.IExamUseCase, log logger.Logger) *Teacher {
 	return &Teacher{
 		uc:     useCase,
+		u: u,
 		logger: log,
 	}
 
 }
 
-func (t *Teacher) AddTest(ctx context.Context, request *pb.AddTestRequest) (*pb.Response, error) {
-	addTest := FromRequestToModel(request)
-
-	testID, err := t.uc.AddTest(ctx, addTest)
-	if err != nil {
-		t.logger.Errorf("error is while adding testID in handler err: %v", err.Error())
-		return FromModelToResponse(""), err
+func (t *Teacher)CreateTest(ctx context.Context, in *tp.Tests) (*tp.Res, error){
+	id:=in.TeacherID
+	req:=FromRequestTestsToModel(in)
+	err:=t.uc.CreateTest(ctx,id,req)
+	if err!=nil{
+		t.logger.Errorf("error is while creating test in handler err: %v", err.Error())
+		return nil,err
 	}
-
-	log.Println(addTest)
-
-	return &pb.Response{
-		Id: testID,
-	}, nil
+	return nil,nil
 }
 
-func (t *Teacher) StartTest(ctx context.Context, class *pb.CreateClass) (*pb.Response, error) {
-	createClass := FromReqToModel(class)
+// create class with name and password
 
-	questionID, err := t.uc.StartTest(ctx, createClass)
+
+func (t *Teacher) ClassCreate(ctx context.Context,in *tp.Class) (*tp.Response, error){
+	t.logger.Info(in)
+	req := FromRequestClassToModel(in)
+	classID, err := t.uc.CreateClass(ctx, *req)
 	if err != nil {
-		t.logger.Errorf("error is while starting test in handler err: %v", err.Error())
-		return FromModelToResponse(""), err
+		t.logger.Errorf("error is while creating class in handler err: %v", err.Error())
+		return FromModelToResponseClass(""), err
 	}
-	return &pb.Response{
-		Id: questionID,
-	}, nil
+	return FromModelToResponseClass(classID), nil
 }
+
+func(t *Teacher) CreateExam(ctx context.Context,in *tp.Exam) (*tp.Response, error){
+	req:=FromRequestExamToModel(in)
+
+	examID,err:=t.u.CreateExam(ctx,req)
+	if err!=nil{
+		t.logger.Errorf("error is while creating exam in handler err: %v", err.Error())
+		return FromModelToResponseClass(""),err
+	}
+	return FromModelToResponseClass(examID),nil
+}
+
+
+
+
+

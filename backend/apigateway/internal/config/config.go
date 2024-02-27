@@ -29,6 +29,8 @@ type Config struct {
 	Files     Files
 	Admin_RPC Admin_RPC
 	Auth_RPC  Auth_RPC
+	Student_RPC Student_RPC
+	Teacher_RPC Teacher_RPC
 	HTTP_Port HTTP_Port
 }
 
@@ -98,5 +100,13 @@ type (
 	Auth_RPC struct {
 		Hosts string `env:"AUTH_RPC_HOST"`
 		Port  string `env:"AUTH_RPC_PORT"`
+	}
+	Student_RPC struct {
+		Hosts string `env:"STUDENT_RPC_HOST"`
+		Port  string `env:"STUDENT_RPC_PORT"`
+	}
+	Teacher_RPC struct {
+		Hosts string `env:"TEACHER_RPC_HOST"`
+		Port  string `env:"TEACHER_RPC_PORT"`
 	}
 )

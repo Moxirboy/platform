@@ -13,7 +13,7 @@ type TeacherUsecase struct {
 	log  logger.Logger
 }
 
-func NewTeacherUseCase(repo repo.ITeacherRepository, log logger.Logger) ITeacherUsecase {
+func NewTeacherUseCase(repo repo.ITeacherRepository, log logger.Logger) ITeacherUseCase {
 	return &TeacherUsecase{
 		repo: repo,
 		log:  log,

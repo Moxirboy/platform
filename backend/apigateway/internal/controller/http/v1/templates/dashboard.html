@@ -79,7 +79,7 @@ header {
     </div>
     <script>document.addEventListener("DOMContentLoaded", function() {
         // Fetch the dashboard text from the server
-        fetch("/test-available")
+        fetch("/v1/student/exam")
             .then(response => response.json())
             .then(data => {
                 // Update the dashboard text

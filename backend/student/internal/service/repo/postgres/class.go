@@ -1,77 +1,85 @@
 package postgres
 
+// import (
+// 	"database/sql"
+// 	"context"
+// 	"student/internal/models"
+// 	"student/internal/service/repo"
+// 	logger "student/pkg/log"
 
-type studentRepo struct{
-	db  *sql.DB
-	log logger.Logger
-}
+// )
 
-func NewStudentRepo(db *sql.DB, log logger.Logger ) *studentRepo{
-	return &studentRepo{
-		db:DB,
-		log:log,
-	}
-}
+// type studentRepo struct{
+// 	db  *sql.DB
+// 	log logger.Logger
+// }
 
-func (s *studentRepo) TakeExam(ctx context.Context, answers models.CreateAnswers) (models.TestResult, error) {
-	for _, answer := range answers.Answers {
-		_, err := s.DB.ExecContext(ctx, "insert into answers (question_id, choice_id, is_correct) values ($1, $2, $3)",
-			answer.QuestionID, answer.ChoiceID, answer.IsCorrect)
-		if err != nil {
-			return models.TestResult{}, err
-		}
-	}
-	result, err := s.evaluateTestResult(answers.ExamID)
-	if err != nil {
-		return models.TestResult{}, err
-	}
+// func NewStudentRepo(db *sql.DB, log logger.Logger ) *studentRepo{
+// 	return &studentRepo{
+// 		db:db,
+// 		log:log,
+// 	}
+// }
 
-	return models.TestResult{Result: result}, nil
-}
+// func (s *studentRepo) TakeExam(ctx context.Context, answers models.CreateAnswers) (models.TestResult, error) {
+// 	for _, answer := range answers.Answers {
+// 		_, err := s.db.ExecContext(ctx, "insert into answers (question_id, choice_id, is_correct) values ($1, $2, $3)",
+// 			answer.QuestionID, answer.ChoiceID, answer.IsCorrect)
+// 		if err != nil {
+// 			return models.TestResult{}, err
+// 		}
+// 	}
+// 	result, err := s.evaluateTestResult(answers.ExamID)
+// 	if err != nil {
+// 		return models.TestResult{}, err
+// 	}
 
-func (s *studentRepo) GetTestResults(ctx context.Context, examID string) ([]models.TestResult, error) {
+// 	return models.TestResult{Result: result}, nil
+// }
 
-	rows, err := s.DB.QueryContext(ctx, "select question_id, is_correct from answers where question_id IN (select id from questions where exam_id = $1)", examID)
-	if err != nil {
-		return nil, err
-	}
-	defer rows.Close()
+// func (s *studentRepo) GetTestResults(ctx context.Context, examID string) ([]models.TestResult, error) {
 
-	resultsMap := make(map[string]string)
+// 	rows, err := s.db.QueryContext(ctx, "select question_id, is_correct from answers where question_id IN (select id from questions where exam_id = $1)", examID)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+// 	defer rows.Close()
 
-	for rows.Next() {
-		var questionID string
-		var isCorrect bool
-		if err := rows.Scan(&questionID, &isCorrect); err != nil {
-			return nil, err
-		}
-		result := "Fail"
-		if isCorrect {
-			result = "Pass"
-		}
-		resultsMap[questionID] = result
-	}
+// 	resultsMap := make(map[string]string)
 
-	if err := rows.Err(); err != nil {
-		return nil, err
-	}
+// 	for rows.Next() {
+// 		var questionID string
+// 		var isCorrect bool
+// 		if err := rows.Scan(&questionID, &isCorrect); err != nil {
+// 			return nil, err
+// 		}
+// 		result := "Fail"
+// 		if isCorrect {
+// 			result = "Pass"
+// 		}
+// 		resultsMap[questionID] = result
+// 	}
 
-	var results []models.TestResult
-	for questionID, result := range resultsMap {
-		results = append(results, models.TestResult{
-			QuestionID: questionID,
-			Result:     result,
-		})
-	}
+// 	if err := rows.Err(); err != nil {
+// 		return nil, err
+// 	}
 
-	return results, nil
-}
+// 	var results []models.TestResult
+// 	for questionID, result := range resultsMap {
+// 		results = append(results, models.TestResult{
+// 			QuestionID: questionID,
+// 			Result:     result,
+// 		})
+// 	}
 
-func (s *studentRepo) evaluateTestResult(examID string) (string, error) {
-	score := 0
-	if score >= passingScore {
-		return "Pass", nil
-	} else {
-		return "Fail", nil
-	}
-}
+// 	return results, nil
+// }
+
+// func (s *studentRepo) evaluateTestResult(examID string) (string, error) {
+// 	score := 0
+// 	if score >= passingScore {
+// 		return "Pass", nil
+// 	} else {
+// 		return "Fail", nil
+// 	}
+// }

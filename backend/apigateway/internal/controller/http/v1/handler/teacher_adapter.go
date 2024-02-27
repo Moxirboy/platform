@@ -1,65 +1,63 @@
 package handler
 
-import (
-	"gateway/internal/controller/http/v1/dto"
-	"gateway/pkg/utils"
-	pb "gateway/proto"
-	"time"
-)
+import "gateway/internal/controller/http/v1/dto"
+import tp "gateway/proto/teacher"
 
-func FromReqToTeacher(
-	teacher dto.Teacher,
-) *pb.User {
-	return &pb.User{
-		ID:        teacher.ID,
-		Firstname:  teacher.Firstname,
-		Lastname:  teacher.Lastname,
-		Password:  teacher.Password,
-		Role:      "teacher",
-		CreatedAt: time.Now().Format("2006-01-02"),
-		UpdatedAt: time.Now().Format("2006-01-02"),
-		Verified:  true,
+func FromClassRequestToProto(
+	id string,
+	req dto.ClassRequest,
+) *tp.Class  {
+	return &tp.Class{
+		Name: req.Name,
+		Password: req.Password,
+		TeacherID: id,
 	}
 }
 
-func FromProtoToDtoUser(
-	user *pb.User,
-) *dto.Teacher {
-	return &dto.Teacher{
-		ID:        user.GetID(),
-		Firstname:  user.GetFirstname(),
-		Lastname: user.GetLastname(),
-		Password:  user.GetPassword(),
-		Role:      user.GetRole(),
-		CreatedAt: user.GetCreatedAt(),
-		UpdateAt:  user.GetDeletedAt(),
-		Verified:  user.GetVerified(),
+func FromRequestTestsToModel(
+	id string,
+	req []dto.CreateTestRequest,
+) *tp.Tests  {
+	tests:=[]*tp.Test{}
+	for _,test:=range req{
+		tests=append(tests,FromRequestTestToModel(test))
+	}
+	return &tp.Tests{
+		TeacherID: id,
+		Tests: tests,
 	}
 }
 
-func FromResQueryToQuery(
-	query utils.PaginationQuery,
-) *pb.PaginationQuery {
-	return &pb.PaginationQuery{
-		Size:    int32(query.GetSize()),
-		Page:    int32(query.GetPage()),
-		OrderBy: query.OrderBy,
+func FromRequestTestToModel(
+	req dto.CreateTestRequest,
+) *tp.Test  {
+	choices:=[]*tp.Choice{}
+	for _,choice:=range req.Choices{
+		choices=append(choices,FromRequestChoiceToModel(choice))
+	}
+	return &tp.Test{
+		QuestionText: req.QuestionText,
+		Choices: choices,
+		Answer: req.Answer,
 	}
 }
 
-func FromResToProtoRes(
-	res *pb.UserList,
-) dto.ProtoQuery {
-	user := []*dto.Teacher{}
-	for _, instance := range res.Users {
-		user = append(user, FromProtoToDtoUser(instance))
+
+func FromRequestChoiceToModel(
+	req dto.Choice,
+) *tp.Choice  {
+	return &tp.Choice{
+		ChoiceText: req.ChoiceText,
+		IsAnswer: req.IsAnswer,
 	}
-	return dto.ProtoQuery{
-		TotalCount: int(res.TotalCount),
-		TotalPages: int(res.TotalPages),
-		Page:       int(res.Page),
-		Size:       int(res.GetSize()),
-		HasMore:    res.GetHasMore(),
-		Users:      user,
+}
+
+func FromExamCreateToProto(
+	id string,
+	name string,
+) *tp.Exam  {
+	return &tp.Exam{
+		Name: name,
+		TeacherID: id,
 	}
 }

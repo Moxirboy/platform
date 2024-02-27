@@ -51,7 +51,7 @@ services:
       - ./.student_go_cache:/go-cache # Use individual cache per service
     working_dir: /students
     ports:
-      - "8082:8082" # Use unique port for each service
+      - "5007:5005" # Use unique port for each service
     env_file:
       - .env
     environment:
@@ -59,23 +59,7 @@ services:
     depends_on:
       - db
       
-  teacher:
-    build:
-      context: ./docker/backend
-      dockerfile: Dockerfile
-    volumes:
-      - ./backend/teacher:/teachers
-      - ./.go/pkg:/go/pkg # Consider separate volume for each service
-      - ./.teacher_go_cache:/go-cache # Use individual cache per service
-    working_dir: /teachers
-    ports:
-      - "5008:5008" # Use unique port for each service
-    env_file:
-      - .env
-    environment:
-      GOCACHE: /go-cache
-    depends_on:
-      - db
+  
   
   app:
     build:
@@ -96,5 +80,23 @@ services:
       - admin
       - student
       - teacher
+      - db
+  
+  teacher:
+    build:
+      context: ./docker/backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend/teacher:/teachers
+      - ./.go/pkg:/go/pkg # Consider separate volume for each service
+      - ./.teacher_go_cache:/go-cache # Use individual cache per service
+    working_dir: /teachers
+    ports:
+      - "5008:5005" # Use unique port for each service
+    env_file:
+      - .env
+    environment:
+      GOCACHE: /go-cache
+    depends_on:
       - db
     

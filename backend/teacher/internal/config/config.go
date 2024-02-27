@@ -27,7 +27,7 @@ type Config struct {
 	Setup    Setup
 	Telesign Telesign
 	Files    Files
-	RPC      RPC
+	RPC      Teacher_RPC
 }
 
 type (
@@ -85,7 +85,9 @@ type (
 		ParcelsReportFilePath string `env:"PARCELS_EXCEL_FILE_PATH"`
 	}
 
-	RPC struct {
-		Port string `env:"TEACHER_RPC_PORT"`
+	
+	Teacher_RPC struct {
+		Hosts string `env:"TEACHER_RPC_HOST"`
+		Port  string `env:"TEACHER_RPC_PORT"`
 	}
 )

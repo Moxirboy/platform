@@ -4,80 +4,96 @@ import (
 	"gateway/internal/controller/http/v1/dto"
 	client "gateway/pkg/grpc"
 	logger "gateway/pkg/log"
-	"gateway/pkg/utils"
 	"log"
 	"net/http"
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
-type teacher struct {
+type teachers struct {
 	g      *gin.RouterGroup
 	client *client.GRPCClient
 	log    logger.Logger
 }
 
-func NewTeacherHandler(
+func NewTeachersHandler(
 	g *gin.RouterGroup,
 	client *client.GRPCClient,
 	log logger.Logger,
-) {
-	teacher := teacher{
-		g,
-		client,
-		log,
+){
+	handler := &teachers{
+		g:      g,
+		client: client,
+		log:    log,
 	}
-	handler := g.Group("/admin")
-	handler.POST("/create", teacher.CreateTeacher)
-	handler.GET("/getall", teacher.GetAll)
+	teachers:=g.Group("/teacher")
+	teachers.POST("/class",handler.CreateClass)
+	teachers.POST("/createExam",handler.CreateExam)
 }
 
-// func (c *teacher) 
-
-func (c *teacher) CreateTeacher(ctx *gin.Context) {
-	req := dto.Teacher{}
-	log.Println(req)
-	if err := ctx.ShouldBind(&req); err != nil {
-		c.log.Error(err)
-		ctx.JSON(404, err)
+func (c *teachers) CreateClass(ctx *gin.Context) {
+	s:=sessions.Default(ctx)
+	req := dto.ClassRequest{}
+	
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		c.log.Error("error binding request", err)
+		ctx.JSON(400, dto.ErrorResponse{Message: err.Error()})
 		return
 	}
-	teacher := FromReqToTeacher(req)
-	m, err := c.client.UserService().CreateUser(ctx.Request.Context(), teacher)
+	c.log.Info(req)
+	id:=s.Get("id").(string)
+	log.Println(id)
+	res,err:=c.client.TeacherService().ClassCreate(ctx.Request.Context(), FromClassRequestToProto(id,req))
 	if err != nil {
 		c.log.Error(err)
-
 		ctx.JSON(404, err)
 		return
 	}
-	teacher.ID = m.ErrorMessage
 	ctx.JSON(http.StatusCreated, gin.H{
-		"id":      teacher.ID,
-		"teacher": teacher.Firstname,
-		// Add other relevant fields
+		"message": "class created",
+		"classId": res.Id,
 	})
-
 }
 
-func (c *teacher) GetAll(ctx *gin.Context) {
-	log.Println("smt")
-	query, err := utils.GetQueryFromCtx(ctx)
-	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+func (c *teachers) CreateTest(ctx *gin.Context) {
+	s:=sessions.Default(ctx)
+	req := []dto.CreateTestRequest{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		c.log.Error("error binding request", err)
+		ctx.JSON(400, dto.ErrorResponse{Message: err.Error()})
 		return
 	}
-	protoQuery := FromResQueryToQuery(*query)
-
-	protoRes, err := c.client.UserService().GetUserList(ctx.Request.Context(), protoQuery)
+	id:=s.Get("id").(string)
+	_,err:=c.client.TeacherService().CreateTest(ctx.Request.Context(), FromRequestTestsToModel(id,req))
 	if err != nil {
-		ctx.JSON(http.StatusBadRequest, gin.H{
-			"error": err.Error(),
-		})
+		c.log.Error(err)
+		ctx.JSON(404, err)
 		return
 	}
-	res := FromResToProtoRes(protoRes)
+	ctx.JSON(http.StatusCreated, gin.H{
+		"message": "test created",
+	})
+}
 
-	ctx.JSON(200, res)
+func (c *teachers) CreateExam(ctx *gin.Context) {
+	
+	s:=sessions.Default(ctx)
+	req := dto.Class{}
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		c.log.Error("error binding request", err)
+		ctx.JSON(400, dto.ErrorResponse{Message: err.Error()})
+		return
+	}
+	id:=s.Get("id").(string)
+	res,err:=c.client.TeacherService().CreateExam(ctx.Request.Context(), FromExamCreateToProto(id,req.Name))
+	if err != nil {
+		c.log.Error(err)
+		ctx.JSON(404, err)
+		return
+	}
+	ctx.JSON(http.StatusCreated, gin.H{
+		"message": "exam created",
+		"examId": res.Id,
+	})
 }

@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS "choices" (
-  "id" uuid PRIMARY KEY,
-  "question_id" uuid,
+  "id" SERIAL PRIMARY KEY,
+  "question_id" VARCHAR(60),
   "choice_text" text NOT NULL
 );
 

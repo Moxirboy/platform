@@ -25,7 +25,7 @@ func main() {
 	log.InitLogger()
 
 
-	log.Infof(
+	log.Info(
 
 		"AppVersion: %s, LogLevel: %s, Mode: %s",
 		config.AppVersion,

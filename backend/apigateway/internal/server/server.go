@@ -10,7 +10,11 @@ import (
 	"fmt"
 	"os"
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/sessions"
+    "github.com/gin-contrib/sessions/cookie"
 	"net/http"
+	"runtime/debug"
+
 )
 
 type Server struct {
@@ -36,10 +40,27 @@ func (s *Server) Run(port string) error {
 
 	fmt.Println("Current Working Directory:", wd)
 	r := gin.New()
+	store := cookie.NewStore([]byte("moxirboy"))
+	r.Use(func(c *gin.Context) {
+		defer func() {
+			if err := recover(); err != nil {
+				log.Println("recovered from panic:", err)
+				debug.PrintStack() // Log the stack trace
+				c.AbortWithStatus(http.StatusInternalServerError)
+			}
+		}()
+		c.Next()
+	})
+    r.Use(sessions.Sessions("mysession", store))
 	r.StaticFile("/","internal/controller/http/v1/templates/login.html")
 	r.StaticFile("/signup","internal/controller/http/v1/templates/sign.html")
 	r.StaticFile("/dashboard","internal/controller/http/v1/templates/dashboard.html")
 	r.StaticFile("/test","internal/controller/http/v1/templates/test.html")
+	r.StaticFile("/dash","internal/controller/http/v1/templates/teacher_dashboard.html")
+	r.StaticFile("/dash/createTest","internal/controller/http/v1/templates/create_test.html")
+	r.StaticFile("/dash/createClass","internal/controller/http/v1/templates/create_class.html")
+	r.StaticFile("/dash/createExam","internal/controller/http/v1/templates/create_exam.html")
+
 	r.GET("/questions", getQuestions)
 	r.POST("/check-answers", checkAnswers)
 	r.GET("/test-available", Available)
@@ -103,6 +124,7 @@ func checkAnswers(c *gin.Context) {
 	var userAnswers []struct {
 		QuestionID  int `json:"questionId"`
 		AnswerIndex int `json:"answerIndex"`
+		Answer      int `json:"answer"`
 	}
 	if err := c.BindJSON(&userAnswers); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request payload"})

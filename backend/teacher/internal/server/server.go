@@ -9,7 +9,7 @@ import (
 	"teacher/internal/service/usecase"
 	logger "teacher/pkg/log"
 	"teacher/pkg/postgres"
-	pb "teacher/proto"
+	pb "teacher/proto/teacher"
 )
 
 type Server struct {
@@ -39,7 +39,7 @@ func (s Server) Run() error {
 
 	server := grpc.NewServer()
 
-	pb.RegisterUserServiceServer(server, handler.NewTeacherHandler(uc.ITeacherUseCase(), s.log))
+	pb.RegisterTeacherServiceServer(server, handler.NewTeacherHandler(uc.ITeacherUseCase(), uc.IExamUseCase(),s.log))
 
 	names := server.GetServiceInfo()
 	log.Println(names)

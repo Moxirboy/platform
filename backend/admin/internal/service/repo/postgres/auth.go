@@ -1,11 +1,12 @@
 package postgres
 
 import (
-	logger "admin/pkg/log"
-	domain "admin/internal/models"
+	"admin/internal/models"
 	"admin/internal/service/repo"
+	logger "admin/pkg/log"
 	"context"
 	"database/sql"
+	"log"
 )
 
 type authRepository struct {
@@ -32,6 +33,8 @@ func (r *authRepository) GetExist(
 	error,
 ) {
 	var exist bool
+	log.Println(firstname,
+		lastname,)
 	err := r.db.QueryRowContext(
 		ctx,
 		GetExist,
@@ -76,27 +79,29 @@ func (r *authRepository) GetUser(
 
 func (r *authRepository) CreateUser(
 	ctx context.Context,
-	auth *domain.StudentAuth,
+	auth *models.StudentAuth,
 ) (
 	id string,
-	role string,
 	err error,
 ) {
+	r.log.Info(auth)
 	err = r.db.QueryRowContext(
 		ctx,
 		CreateUser,
-		auth.Firstname,
-		auth.Lastname,
-		auth.Password,
-		auth.Role,
-		auth.Created_at,
-		auth.Updated_at,
+		&auth.Firstname,
+		&auth.Lastname,
+		&auth.Password,
+		&auth.Role,
+		true,
 	).Scan(
 		&id,
-		&role,
+		
 	)
+	r.log.Info(id)
 	if err != nil {
-		return "", "", nil
+		r.log.Error("repo.auth.GetUser error : ", err.Error())
+		return "",  err
 	}
-	return id, role, nil
+	r.log.Info(id)
+	return id,  nil
 }

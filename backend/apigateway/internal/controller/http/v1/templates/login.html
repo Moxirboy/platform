@@ -76,12 +76,14 @@ button:hover {
         <div class="link">
           <p>Not Registered? <a href="/signup">Sign up</a></p>
         </div>
-        <button onclick="SubmitEvent()">Login</button>
+        <button onclick="SubmitEvent(event)">Login</button>
       </form>
     </div>
   </div>
   <script>
-   function SubmitEvent() {
+  function SubmitEvent(event) {
+  event.preventDefault(); // Prevent default form submission
+
   const firstName = document.getElementById('firstName').value;
   const lastName = document.getElementById('lastName').value;
   const password = document.getElementById('password').value;
@@ -107,7 +109,19 @@ button:hover {
     return response.json();
   })
   .then(data => {
-    console.log(data);
+    // Save token to localStorage
+    localStorage.setItem('token', data.token);
+
+    // Check role
+    if(data.role === 'teacher') {
+      // Redirect to /dash
+      window.location.href = '/dash';
+    } else if (data.role === 'student') {
+      // Redirect to /dashboard
+      window.location.href = '/dashboard';
+    } else {
+      console.log('Role is not teacher or student');
+    }
   })
   .catch(error => {
     console.error('Error:', error);

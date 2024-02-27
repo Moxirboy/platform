@@ -63,6 +63,7 @@ func (u *authUsecase) CreateUser(
 	string,
 	error,
 ) {
+	var classid string
 	exist, err := u.class.GetClassExist(ctx, student.Class)
 	if err != nil {
 		return "", "", err
@@ -71,16 +72,24 @@ func (u *authUsecase) CreateUser(
 		return "", "", errors.ErrClassNotFound
 	}
 	var pass string
-	pass, student.Class, err = u.class.GetClassPassword(ctx, student.Class)
+	pass, classid, err = u.class.GetClassPassword(ctx, student.Class)
+	u.log.Info(pass)
 	if err != nil {
 		return "", "", err
 	}
 	if pass != student.Password {
 		return "", "", errors.ErrInvalidCredentials
 	}
-	id, role, err := u.auth.CreateUser(ctx, student)
+	student.Role="student"
+	u.log.Info(student)
+	id,  err := u.auth.CreateUser(ctx, student)
 	if err != nil {
 		return "", "", err
 	}
-	return id, role, nil
+
+	err = u.class.LinkClassUser(ctx, classid, id)
+	if err != nil {
+		return "", "", err
+	}
+	return id, student.Role, nil
 }

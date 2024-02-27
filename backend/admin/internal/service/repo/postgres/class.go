@@ -27,7 +27,7 @@ func (r *classRepository) GetClassExist(ctx context.Context, className string) (
 	err := r.db.QueryRowContext(
 		ctx,
 		GetClassExist,
-		className,
+		&className,
 	).Scan(
 		&number,
 	)
@@ -46,13 +46,29 @@ func (r *classRepository) GetClassPassword(ctx context.Context, className string
 	err := r.db.QueryRowContext(
 		ctx,
 		GetClassPassword,
-		className,
+		&className,
 	).Scan(
-		&password,
 		&id,
+		&password,
+		
 	)
 	if err != nil {
 		return "", "", err
 	}
 	return password, id, nil
+}
+
+func (r *classRepository) LinkClassUser(ctx context.Context, classID string, userID string) error {
+
+	
+	_, err := r.db.ExecContext(
+		ctx,
+		LinkClassUser,
+		&classID,
+		&userID,
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }

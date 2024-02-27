@@ -40,4 +40,14 @@ func SetUpHandlerV1(
 		client,
 		log,
 	)
+	handler.NewTeachersHandler(
+		Group,
+		client,
+		log,
+	)
+	handler.NewStudentHandler(
+		Group,
+		client,
+		log,
+	)
 }

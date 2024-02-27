@@ -9,3 +9,4 @@
 .gateway_go_cache/
 .trunk/
 bin/
+.auth_go_cache/

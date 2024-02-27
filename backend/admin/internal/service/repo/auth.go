@@ -27,7 +27,6 @@ type AuthRepository interface {
 		auth *models.StudentAuth,
 	) (
 		id string,
-		role string,
 		err error,
 	)
 }

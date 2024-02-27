@@ -7,7 +7,7 @@ import (
 )
 
 type IUseCase interface {
-	TeacherUsecase() ITeacherUsecase
+	TeacherUsecase() ITeacherUseCase
 	AuthUseCase() AuthUsecase
 
 }
@@ -45,8 +45,8 @@ func New(
 		connections: connections,
 	}
 }
-func (c *UseCase) TeacherUsecase() ITeacherUsecase {
-	return c.connections[_teacherUseCase].(ITeacherUsecase)
+func (c *UseCase) TeacherUsecase() ITeacherUseCase {
+	return c.connections[_teacherUseCase].(ITeacherUseCase)
 }
 
 func (u *UseCase) AuthUseCase() AuthUsecase {

@@ -3,10 +3,11 @@ package handler
 import (
 	"gateway/internal/controller/http/v1/dto"
 	client "gateway/pkg/grpc"
+	"gateway/pkg/jwt"
 	logger "gateway/pkg/log"
 	"gateway/pkg/utils"
-	
 
+	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"
 )
 
@@ -42,6 +43,7 @@ func (c *auth) SignPage(ctx *gin.Context){
 
 func (c *auth) Login(ctx *gin.Context) {
 	req := dto.LoginRequest{}
+	s:=sessions.Default(ctx)
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.log.Error("error binding request", err)
 		ctx.JSON(400, dto.ErrorResponse{Message: err.Error()})
@@ -66,11 +68,26 @@ func (c *auth) Login(ctx *gin.Context) {
 		ctx.JSON(403, dto.ErrorResponse{Message: "No Such User"})
 		return
 	}
-	ctx.JSON(200, dto.LoginResponse{Token: "123456"})
+
+	token,err :=jwt.CreateToken(pbRes.Id, pbRes.Role)
+	
+	if err != nil {
+		c.log.Error("error creating token", err)
+		ctx.JSON(500, dto.ErrorResponse{Message: "internal server error"})
+		return
+	}
+	s.Set("id",pbRes.Id)
+	s.Set("role",pbRes.Role)
+	s.Save()
+	ctx.JSON(200, dto.Response{
+		Token: token,
+		Role: pbRes.Role,
+	})
 }
 
 func (c *auth) SignUp(ctx *gin.Context) {
 	req := dto.SignUpRequest{}
+	s:=sessions.Default(ctx)
 	if err := ctx.ShouldBindJSON(&req); err != nil {
 		c.log.Error("error binding request", err)
 		ctx.JSON(400, dto.ErrorResponse{Message: "invalid request"})
@@ -84,10 +101,21 @@ func (c *auth) SignUp(ctx *gin.Context) {
 	}
 	pb := FromRequestToPbSignUp(req)
 	pbRes, err := c.client.AuthService().SignUp(ctx.Request.Context(), pb)
+	
 	if err != nil {
 		c.log.Error("error calling signup", err)
 		ctx.JSON(500, dto.ErrorResponse{Message: "internal server error"})
 		return
 	}
-	ctx.JSON(200, dto.SignUpResponse{Id: pbRes.Id})
+	token,err :=jwt.CreateToken(pbRes.Id, pbRes.Role)
+	
+	if err != nil {
+		c.log.Error("error creating token", err)
+		ctx.JSON(500, dto.ErrorResponse{Message: "internal server error"})
+		return
+	}
+	s.Set("id",pbRes.Id)
+	s.Set("role",pbRes.Role)
+	s.Save()
+	ctx.JSON(200, dto.Response{Token: token})
 }

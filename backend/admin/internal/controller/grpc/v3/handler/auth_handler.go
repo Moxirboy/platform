@@ -33,11 +33,12 @@ func (h *authHandler) Login(ctx context.Context, in *authpb.LoginRequest) (*auth
 
 func (h *authHandler) SignUp(ctx context.Context, in *authpb.SignUpRequest) (*authpb.SignUpResponse, error) {
 	req := FromPbToModel(in)
+	h.log.Info(req)
 	id, role, err := h.uc.CreateUser(ctx, &req)
 	if err != nil {
 		return nil, err
 	}
-
+	
 	res := FromModelToPbSignUp(id, role, req.Class)
 
 	return res, nil

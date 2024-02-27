@@ -8,9 +8,14 @@ type AddTestRequest struct {
 	ChoiceID     string `json:"choice_id"`
 }
 
-type CreateClass struct {
-	ID        string `json:"id"`
-	TeacherID string `json:"teacher_id"`
-	ClassID   string `json:"class_id"`
-	Period    string `json:"period"`
+type Test struct {
+	QuestionText string
+	Choices      []*Choice
+	Answer 	     string
+}
+
+type Choice struct {
+	ID          string 
+	ChoiceText  string 
+	IsAnswer bool
 }
