@@ -1,0 +1,21 @@
+FROM golang:alpine
+
+# Set necessary environmet variables needed for our image
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+    GOARCH=amd64
+
+WORKDIR /build
+
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
+COPY . .
+
+RUN go build -o gateway_service ./backend/apigateway
+
+EXPOSE 5005
+
+CMD ["./admin_service"]
